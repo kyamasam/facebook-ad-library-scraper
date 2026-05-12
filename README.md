@@ -75,59 +75,6 @@ ads = scrape(config)
 print(f"{len(ads)} ads found")
 ```
 
-## CLI Usage
-
-Use either a full Facebook Ad Library URL:
-
-```bash
-facebook-ad-library-scraper --url "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=KE&q=mpesa"
-```
-
-Or build the URL from filters:
-
-```bash
-facebook-ad-library-scraper \
-  --query "loan" \
-  --country KE \
-  --active-status active \
-  --media-type image \
-  --languages en sw \
-  --start-date-min 2026-05-01 \
-  --output-dir output
-```
-
-Parse existing snapshots only:
-
-```bash
-facebook-ad-library-scraper --output-dir output --parse-only
-```
-
-### CLI Options
-
-| Option | Description |
-| --- | --- |
-| `--url` | Full Facebook Ad Library URL. When provided, filter flags are ignored. |
-| `--query`, `-q` | Search keyword or phrase. |
-| `--country` | Two-letter country code. Default: `CD`. |
-| `--active-status` | `active`, `inactive`, or `all`. Default: `active`. |
-| `--ad-type` | Ad type filter. Default: `all`. |
-| `--media-type` | `all`, `image`, `meme`, `image_and_meme`, `video`, or `none`. |
-| `--search-type` | `keyword_unordered` or `keyword_exact_phrase`. |
-| `--is-targeted-country` | Sets `is_targeted_country=true` in the URL. |
-| `--sort-mode` | `total_impressions` or `relevancy_monthly_grouped`. |
-| `--sort-direction` | `desc` or `asc`. |
-| `--languages` | One or more language codes, e.g. `--languages en fr`. |
-| `--page-ids` | One or more Facebook page IDs. |
-| `--start-date-min` | Earliest ad start date, `YYYY-MM-DD`. |
-| `--start-date-max` | Latest ad start date, `YYYY-MM-DD`. |
-| `--output-dir` | Directory for exports and snapshots. Default: `ad_library_output`. |
-| `--max-scrolls` | Maximum scroll attempts. Default: `50`. |
-| `--scroll-pause` | Seconds to wait between scrolls. Default: `3.0`. |
-| `--snapshot-every` | Save HTML every N scrolls. Default: `5`. |
-| `--headless` | Run Chrome without a visible browser window. |
-| `--chrome-version` | Chrome major version to pass to the driver. |
-| `--parse-only` | Parse saved snapshots without scraping again. |
-
 ## Python API
 
 ### `build_url(...)`
@@ -253,3 +200,59 @@ Each parsed ad may include:
 | `cta_texts` | Raw CTA text blocks. |
 | `has_multiple_versions` | Whether Facebook shows multiple versions. |
 | `has_whatsapp_cta` | Whether WhatsApp appears in the CTA or body. |
+
+
+
+
+## CLI Usage
+
+Use either a full Facebook Ad Library URL:
+
+```bash
+facebook-ad-library-scraper --url "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=KE&q=mpesa"
+```
+
+Or build the URL from filters:
+
+```bash
+facebook-ad-library-scraper \
+  --query "loan" \
+  --country KE \
+  --active-status active \
+  --media-type image \
+  --languages en sw \
+  --start-date-min 2026-05-01 \
+  --output-dir output
+```
+
+Parse existing snapshots only:
+
+```bash
+facebook-ad-library-scraper --output-dir output --parse-only
+```
+
+### CLI Options
+
+| Option | Description |
+| --- | --- |
+| `--url` | Full Facebook Ad Library URL. When provided, filter flags are ignored. |
+| `--query`, `-q` | Search keyword or phrase. |
+| `--country` | Two-letter country code. Default: `CD`. |
+| `--active-status` | `active`, `inactive`, or `all`. Default: `active`. |
+| `--ad-type` | Ad type filter. Default: `all`. |
+| `--media-type` | `all`, `image`, `meme`, `image_and_meme`, `video`, or `none`. |
+| `--search-type` | `keyword_unordered` or `keyword_exact_phrase`. |
+| `--is-targeted-country` | Sets `is_targeted_country=true` in the URL. |
+| `--sort-mode` | `total_impressions` or `relevancy_monthly_grouped`. |
+| `--sort-direction` | `desc` or `asc`. |
+| `--languages` | One or more language codes, e.g. `--languages en fr`. |
+| `--page-ids` | One or more Facebook page IDs. |
+| `--start-date-min` | Earliest ad start date, `YYYY-MM-DD`. |
+| `--start-date-max` | Latest ad start date, `YYYY-MM-DD`. |
+| `--output-dir` | Directory for exports and snapshots. Default: `ad_library_output`. |
+| `--max-scrolls` | Maximum scroll attempts. Default: `50`. |
+| `--scroll-pause` | Seconds to wait between scrolls. Default: `3.0`. |
+| `--snapshot-every` | Save HTML every N scrolls. Default: `5`. |
+| `--headless` | Run Chrome without a visible browser window. |
+| `--chrome-version` | Chrome major version to pass to the driver. |
+| `--parse-only` | Parse saved snapshots without scraping again. |
