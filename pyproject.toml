@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "facebook-ad-library-scraper"
-version = "0.1.0"
+version = "0.1.1"
 description = "Scrape and parse Facebook Ad Library result pages."
 readme = "README.md"
 license = { text = "MIT" }
