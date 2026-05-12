@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 from .core import ScraperConfig, build_url, make_driver, parse_ads, parse_from_dir, remove_duplicates, save_outputs
@@ -88,7 +89,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--scroll-pause", type=float, default=3.0, help="Seconds to wait between scrolls.")
     parser.add_argument("--snapshot-every", type=int, default=5, help="Save HTML every N scrolls.")
     parser.add_argument("--headless", action="store_true", help="Run Chrome in headless mode.")
-    parser.add_argument("--chrome-version", type=int, default=None, help="Chrome major version for the driver.")
+    parser.add_argument(
+        "--chrome-version",
+        type=int,
+        default=None,
+        help="Chrome major version for the driver. Usually auto-detected; use only if startup fails.",
+    )
     parser.add_argument("--parse-only", action="store_true", help="Only parse existing snapshots.")
     return parser
 
@@ -162,7 +168,11 @@ def main() -> None:
     print("=" * 60)
     print(f"URL: {config.url}")
 
-    ads = run(config, parse_only=args.parse_only)
+    try:
+        ads = run(config, parse_only=args.parse_only)
+    except RuntimeError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     whatsapp_count = sum(1 for ad in ads if ad.get("has_whatsapp_cta"))
     unique_pages = len(set(ad["page_name"] for ad in ads if ad.get("page_name")))

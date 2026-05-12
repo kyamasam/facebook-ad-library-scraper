@@ -3,6 +3,7 @@
 from .core import (
     ScraperConfig,
     dedupe,
+    detect_chrome_version,
     make_driver,
     parse_ads,
     parse_from_dir,
@@ -17,6 +18,7 @@ from .core import (
 __all__ = [
     "ScraperConfig",
     "dedupe",
+    "detect_chrome_version",
     "make_driver",
     "parse_ads",
     "parse_from_dir",

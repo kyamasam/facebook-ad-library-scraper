@@ -37,7 +37,25 @@ cd facebook-ad-library-scraper
 pip install -e .
 ```
 
-You also need Google Chrome installed.
+You also need Google Chrome installed. The package auto-detects your Chrome major version for `undetected-chromedriver` in most cases, so users normally do not need to install ChromeDriver manually or pass `--chrome-version`.
+
+If Chrome startup fails, check your installed Chrome version:
+
+```bash
+google-chrome --version
+```
+
+On macOS:
+
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version
+```
+
+Then pass only the major version number:
+
+```bash
+facebook-ad-library-scraper --query "mpesa" --country KE --chrome-version 126
+```
 
 ## Quick Start
 
@@ -103,8 +121,21 @@ from facebook_ad_library_scraper.core import ScraperConfig
 config = ScraperConfig(
     url="https://www.facebook.com/ads/library/?...",
     output_dir=Path("output"),
-    max_scrolls=50,
+
+    # Browser/session behavior
     headless=False,
+    chrome_version=None,  # Auto-detected by default. Use an int like 126 only if startup fails.
+    wait_timeout=20,
+
+    # Scrolling and snapshots
+    max_scrolls=50,
+    scroll_pause=3.0,
+    snapshot_every=5,
+    store_html=True,
+
+    # Exports
+    save_json=True,
+    save_csv=False,
 )
 ```
 
@@ -173,7 +204,7 @@ Save parsed ads to disk.
 | `scroll_pause` | `3.0` | Base pause between scrolls, in seconds. |
 | `snapshot_every` | `5` | Save one HTML snapshot every N scrolls. |
 | `headless` | `False` | Run Chrome in headless mode. |
-| `chrome_version` | `None` | Chrome major version for `undetected-chromedriver`. |
+| `chrome_version` | `None` | Chrome major version for `undetected-chromedriver`. Auto-detected by default; set only if Chrome startup fails. |
 | `store_html` | `True` | Save HTML snapshots to disk. |
 | `save_json` | `True` | Write `ads.json`. |
 | `save_csv` | `False` | Write `ads.csv`. |
@@ -254,5 +285,5 @@ facebook-ad-library-scraper --output-dir output --parse-only
 | `--scroll-pause` | Seconds to wait between scrolls. Default: `3.0`. |
 | `--snapshot-every` | Save HTML every N scrolls. Default: `5`. |
 | `--headless` | Run Chrome without a visible browser window. |
-| `--chrome-version` | Chrome major version to pass to the driver. |
+| `--chrome-version` | Chrome major version to pass to the driver. Usually auto-detected; use only if startup fails. |
 | `--parse-only` | Parse saved snapshots without scraping again. |

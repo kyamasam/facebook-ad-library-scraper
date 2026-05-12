@@ -5,6 +5,9 @@ from __future__ import annotations
 import csv
 import json
 import random
+import re
+import shutil
+import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,6 +32,17 @@ DEFAULT_URL = (
 )
 
 AD_LIBRARY_BASE = "https://www.facebook.com/ads/library/"
+
+CHROME_VERSION_COMMANDS = [
+    "google-chrome",
+    "google-chrome-stable",
+    "chromium",
+    "chromium-browser",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+]
 
 
 def build_url(
@@ -118,9 +132,51 @@ def make_driver(headless: bool = False, chrome_version: Optional[int] = None) ->
     options.add_argument("--lang=fr-FR")
 
     kwargs = {"options": options}
+    if chrome_version is None:
+        chrome_version = detect_chrome_version()
     if chrome_version is not None:
         kwargs["version_main"] = chrome_version
-    return uc.Chrome(**kwargs)
+
+    try:
+        return uc.Chrome(**kwargs)
+    except Exception as exc:
+        version_hint = (
+            f"Detected Chrome major version: {chrome_version}."
+            if chrome_version is not None
+            else "Could not auto-detect a Chrome major version."
+        )
+        raise RuntimeError(
+            "Unable to start Chrome for scraping. Make sure Google Chrome is installed "
+            "and up to date, then try again. "
+            f"{version_hint} If Chrome is installed but this still fails, pass the major "
+            "version manually, for example: --chrome-version 126."
+        ) from exc
+
+
+def detect_chrome_version() -> Optional[int]:
+    """Return the installed Chrome/Chromium major version when it can be found."""
+
+    for command in CHROME_VERSION_COMMANDS:
+        executable = command if Path(command).exists() else shutil.which(command)
+        if not executable:
+            continue
+
+        try:
+            result = subprocess.run(
+                [executable, "--version"],
+                capture_output=True,
+                check=False,
+                text=True,
+                timeout=5,
+            )
+        except (OSError, subprocess.SubprocessError):
+            continue
+
+        match = re.search(r"(\d+)\.", result.stdout.strip())
+        if match:
+            return int(match.group(1))
+
+    return None
 
 
 def scroll_and_collect(driver: Any, config: Optional[ScraperConfig] = None) -> list[str]:
@@ -196,7 +252,11 @@ def parse_ads(html: str) -> list[dict]:
     for card in soup.select("._7jyh"):
         ad = {}
 
-        for span in card.select("span"):
+        # Library ID and metadata live in the full card container (3 levels up from ._7jyh),
+        # not inside ._7jyh itself.
+        full_card = card.parent.parent.parent if card.parent and card.parent.parent and card.parent.parent.parent else card
+
+        for span in full_card.select("span"):
             text = span.get_text(strip=True)
             if text.startswith("Library ID:"):
                 ad["library_id"] = text.replace("Library ID:", "").strip()
