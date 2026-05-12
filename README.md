@@ -32,7 +32,7 @@ pip install facebook-ad-library-scraper
 For local development:
 
 ```bash
-git clone https://github.com/samfastone/facebook-ad-library-scraper.git
+git clone https://github.com/kyamasam/facebook-ad-library-scraper.git
 cd facebook-ad-library-scraper
 pip install -e .
 ```
