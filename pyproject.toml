@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "facebook-ad-library-scraper"
+version = "0.1.0"
+description = "Scrape and parse Facebook Ad Library result pages."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+keywords = ["facebook", "ads", "ad-library", "scraper", "selenium"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "beautifulsoup4>=4.12",
+    "selenium>=4.20",
+    "undetected-chromedriver>=3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/samfastone/facebook-ad-library-scraper"
+Repository = "https://github.com/samfastone/facebook-ad-library-scraper"
+"Bug Tracker" = "https://github.com/samfastone/facebook-ad-library-scraper/issues"
+
+[project.scripts]
+facebook-ad-library-scraper = "facebook_ad_library_scraper.cli:main"
+
+[tool.setuptools]
+packages = ["facebook_ad_library_scraper"]
